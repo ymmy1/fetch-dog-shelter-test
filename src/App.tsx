@@ -17,7 +17,7 @@ const App: React.FC = () => {
       <Routes>
         <Route path='/fetch-dog-shelter-test/login' element={<Login />} />
         <Route
-          path='/'
+          path='/fetch-dog-shelter-test'
           element={
             isAuthenticated ? (
               <Home />
@@ -38,7 +38,11 @@ const App: React.FC = () => {
         />
         <Route
           path='*'
-          element={<Navigate to={isAuthenticated ? '/' : '/login'} />}
+          element={
+            <Navigate
+              to={isAuthenticated ? '/' : '/fetch-dog-shelter-test/login'}
+            />
+          }
         />
       </Routes>
     </Router>

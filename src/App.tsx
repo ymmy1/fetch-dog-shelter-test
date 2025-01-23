@@ -1,16 +1,15 @@
-import React from 'react';
 import {
   BrowserRouter as Router,
   Routes,
   Route,
   Navigate,
 } from 'react-router-dom';
-import Login from './pages/Login.tsx';
-import Home from './pages/Home.tsx';
-import Favorites from './pages/Favorites.tsx';
+import Login from './pages/Login';
+import Home from './pages/Home';
+import Favorites from './pages/Favorites';
 
 const App: React.FC = () => {
-  const isAuthenticated = false; // Replace this with real auth logic
+  const isAuthenticated = false; // Replace with real auth logic
 
   return (
     <Router basename='/fetch-dog-shelter-test'>
@@ -24,10 +23,7 @@ const App: React.FC = () => {
           path='/favorites'
           element={isAuthenticated ? <Favorites /> : <Navigate to='/login' />}
         />
-        <Route
-          path='*'
-          element={<Navigate to={isAuthenticated ? '/' : '/login'} />}
-        />
+        <Route path='*' element={<Navigate to='/login' />} />
       </Routes>
     </Router>
   );

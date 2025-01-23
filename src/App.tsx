@@ -27,7 +27,7 @@ const App: React.FC = () => {
           }
         />
         <Route
-          path='/favorites'
+          path='/fetch-dog-shelter-test/favorites'
           element={
             isAuthenticated ? (
               <Favorites />
@@ -37,10 +37,14 @@ const App: React.FC = () => {
           }
         />
         <Route
-          path='*'
+          path='/fetch-dog-shelter-test/*'
           element={
             <Navigate
-              to={isAuthenticated ? '/' : '/fetch-dog-shelter-test/login'}
+              to={
+                isAuthenticated
+                  ? '/fetch-dog-shelter-test/'
+                  : '/fetch-dog-shelter-test/login'
+              }
             />
           }
         />

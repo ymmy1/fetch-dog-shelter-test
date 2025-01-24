@@ -1,23 +1,10 @@
 import React, { useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { Box, TextField, Button } from '@mui/material';
-import styled from '@emotion/styled';
-import loginImage from '../assets/login_bg.webp';
+
 import { login } from '../utils/api';
 import { useAuth } from '../auth/AuthProvider';
-
-const LoginContainer = styled.section`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  height: 100vh;
-  color: #333;
-  background-color: #f2f2f2;
-  background: url(${loginImage}) no-repeat center center fixed;
-  background-size: cover;
-`;
+import { DefaultBackground } from '../components/DefaultBackground';
 
 const Login: React.FC = () => {
   const { isAuthenticated, setAuthenticated } = useAuth();
@@ -39,7 +26,7 @@ const Login: React.FC = () => {
   }
 
   return (
-    <LoginContainer aria-label='Login Page'>
+    <DefaultBackground aria-label='Login Page'>
       <Box
         component='form'
         onSubmit={handleSubmit}
@@ -75,7 +62,7 @@ const Login: React.FC = () => {
           Submit
         </Button>
       </Box>
-    </LoginContainer>
+    </DefaultBackground>
   );
 };
 

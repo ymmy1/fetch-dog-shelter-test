@@ -40,3 +40,21 @@ export const checkAuth = async (): Promise<boolean> => {
     return false;
   }
 };
+
+export const logout = async (): Promise<void> => {
+  try {
+    const response = await fetch(`${BASE_URL}/auth/logout`, {
+      method: 'POST',
+      credentials: 'include',
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to logout: ${response.statusText}`);
+    }
+
+    console.log('Logged out successfully');
+  } catch (error) {
+    console.error('Error during logout:', error);
+    throw error;
+  }
+};

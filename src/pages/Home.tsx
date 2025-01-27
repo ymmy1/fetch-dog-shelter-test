@@ -30,7 +30,7 @@ const HomeContainer = styled.div`
 const Home: React.FC = () => {
   const [tab, setTab] = useState('HOME');
 
-  const handleTabChange = (event: React.SyntheticEvent, newValue: string) => {
+  const handleTabChange = (_: React.SyntheticEvent, newValue: string) => {
     setTab(newValue);
   };
   return (

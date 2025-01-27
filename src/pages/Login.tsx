@@ -31,6 +31,7 @@ const Login: React.FC = () => {
         component='form'
         onSubmit={handleSubmit}
         sx={{
+          margin: 'auto',
           display: 'flex',
           flexDirection: 'column',
           gap: 2,

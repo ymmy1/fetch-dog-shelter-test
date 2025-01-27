@@ -107,3 +107,134 @@ export const fetchDogDetails = async (dogIds: string[]): Promise<Dog[]> => {
     throw error;
   }
 };
+
+export const fetchPaginatedDogs = async (
+  page: number,
+  size: number
+): Promise<DogSearchResponse> => {
+  const from = (page - 1) * size;
+  const query = `size=${size}&from=${from}`;
+
+  const response = await fetch(`${BASE_URL}/dogs/search?${query}`, {
+    method: 'GET',
+    credentials: 'include',
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch dogs: ${response.statusText}`);
+  }
+
+  const data: DogSearchResponse = await response.json();
+  return data;
+};
+
+export const fetchAllBreeds = async (): Promise<string[]> => {
+  try {
+    const response = await fetch(`${BASE_URL}/dogs/breeds`, {
+      method: 'GET',
+      credentials: 'include',
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch breeds: ${response.statusText}`);
+    }
+
+    return response.json();
+  } catch (error) {
+    console.error('Error fetching breeds:', error);
+    throw error;
+  }
+};
+
+export const fetchDogsWithFilters = async (filters: {
+  size?: number;
+  from?: number;
+  sort?: string;
+  breeds?: string[];
+  zipCodes?: string[];
+}): Promise<{ dogs: Dog[]; total: number }> => {
+  try {
+    const queryParams = new URLSearchParams();
+
+    if (filters.size) queryParams.append('size', filters.size.toString());
+    if (filters.from) queryParams.append('from', filters.from.toString());
+    if (filters.sort) queryParams.append('sort', filters.sort);
+
+    if (filters.breeds) {
+      filters.breeds.forEach((breed) => queryParams.append('breeds', breed)); // Properly encode multiple breeds
+    }
+
+    if (filters.zipCodes) {
+      filters.zipCodes.forEach((zip) => queryParams.append('zipCodes', zip)); // Properly encode zipCodes
+    }
+
+    const response = await fetch(
+      `${BASE_URL}/dogs/search?${queryParams.toString()}`,
+      {
+        method: 'GET',
+        credentials: 'include',
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch dogs: ${response.statusText}`);
+    }
+
+    const data: DogSearchResponse = await response.json();
+
+    const dogDetailsResponse = await fetch(`${BASE_URL}/dogs`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify(data.resultIds),
+    });
+
+    if (!dogDetailsResponse.ok) {
+      throw new Error(
+        `Failed to fetch dog details: ${dogDetailsResponse.statusText}`
+      );
+    }
+
+    const dogs: Dog[] = await dogDetailsResponse.json();
+
+    return { dogs, total: data.total };
+  } catch (error) {
+    console.error('Error fetching dogs with filters:', error);
+    throw error;
+  }
+};
+
+export const fetchBestMatch = async (favoriteIds: string[]): Promise<Dog[]> => {
+  try {
+    const response = await fetch(`${BASE_URL}/dogs/match`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify(favoriteIds),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch best match: ${response.statusText}`);
+    }
+
+    const { match: matchedDogId } = await response.json();
+
+    const dogDetailsResponse = await fetch(`${BASE_URL}/dogs`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify([matchedDogId]),
+    });
+
+    if (!dogDetailsResponse.ok) {
+      throw new Error(
+        `Failed to fetch dog details: ${dogDetailsResponse.statusText}`
+      );
+    }
+
+    return await dogDetailsResponse.json();
+  } catch (error) {
+    console.error('Error fetching best match:', error);
+    throw error;
+  }
+};
